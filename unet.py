@@ -41,18 +41,17 @@ class UNET(nn.Module):
         
     def forward(self,image):
         
-        #first part of the down convolution
-        x1=self.down1(image)  #feeding in the image
+        x1=self.down1(image)  
         print(x1.size)
         x2=self.maxpool2d(x1)
         x3=self.down2(x2)
-        print("  ",x1.size())
+        print("  ",x3.size())
         x4=self.maxpool2d(x3)
         x5=self.down3(x4)
-        print("    ",x1.size())
+        print("    ",x5.size())
         x6=self.maxpool2d(x5)
         x7=self.down4(x6)
-        print("      ",x1.size())
+        print("      ",x7.size())
         x8=self.maxpool2d(x7)
         x9=self.down5(x8)
         print("        ",x9.size())
@@ -81,4 +80,4 @@ class UNET(nn.Module):
 if __name__=="__main__":
     image=torch.rand((1,1,572,572))
     model=UNET()
-    #print(model(image))
+    model(image)
