@@ -43,31 +43,34 @@ class UNET(nn.Module):
         
         #first part of the down convolution
         x1=self.down1(image)  #feeding in the image
-        #print(x1.size())
+        print(x1.size)
         x2=self.maxpool2d(x1)
         x3=self.down2(x2)
+        print("  ",x1.size())
         x4=self.maxpool2d(x3)
         x5=self.down3(x4)
+        print("    ",x1.size())
         x6=self.maxpool2d(x5)
         x7=self.down4(x6)
+        print("      ",x1.size())
         x8=self.maxpool2d(x7)
         x9=self.down5(x8)
-        #print(x9.size())
+        print("        ",x9.size())
         
         xt=self.uptrans1(x9)
         y=crop(x7,xt)
         x_up=self.upconv2(torch.cat([xt,y],1))
-        print(x_up.size())
+        print("      ",x_up.size())
         
         xt=self.uptrans3(x_up)
         y=crop(x5,xt)
         x_up=self.upconv4(torch.cat([xt,y],1))
-        print(x_up.size())
+        print("    ",x_up.size())
         
-        xt=self.uptran5(x_up)
+        xt=self.uptrans5(x_up)
         y=crop(x3,xt)
         x_up=self.upconv6(torch.cat([xt,y],1))
-        print(x_up.size())
+        print("  ",x_up.size())
         
         xt=self.uptrans7(x_up)
         y=crop(x1,xt)
@@ -78,4 +81,4 @@ class UNET(nn.Module):
 if __name__=="__main__":
     image=torch.rand((1,1,572,572))
     model=UNET()
-    print(model(image))
+    #print(model(image))
