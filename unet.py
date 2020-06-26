@@ -9,6 +9,13 @@ def conv_layers(input_f,output_f):
         nn.ReLU(inplace=True)        
     )
     return conv
+def crop(tensor,target):
+    target_size=target.size()[2]
+    tensor_size=tensor.size()[2]
+    diff=tensor_size-target_size
+    diff=diff//2
+    return tensor[:,:,delta:tensor_size-delta,delta:tensor_size-delta]
+    
 
 class UNET(nn.Module):
     def __init__(self):
@@ -38,8 +45,8 @@ class UNET(nn.Module):
         x9=self.down5(x8)
         #print(x9.size())
         
-        x=self.uptrans(x9)
-        print(x.size())
+        xt=self.uptrans(x9)
+        print(xt.size())
         
         
 if __name__=="__main__":
