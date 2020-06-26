@@ -14,7 +14,7 @@ def crop(tensor,target):
     tensor_size=tensor.size()[2]
     diff=tensor_size-target_size
     diff=diff//2
-    return tensor[:,:,delta:tensor_size-delta,delta:tensor_size-delta]
+    return tensor[:,:,diff:tensor_size-diff,diff:tensor_size-diff]
     
 
 class UNET(nn.Module):
@@ -28,7 +28,16 @@ class UNET(nn.Module):
         self.down4=conv_layers(256,512)
         self.down5=conv_layers(512,1024)
         
-        self.uptrans=nn.ConvTranspose2d(in_channels=1024,out_channels=512,kernel_size=2,stride=2)
+        self.uptrans1=nn.ConvTranspose2d(in_channels=1024,out_channels=512,kernel_size=2,stride=2)
+        self.upconv2=conv_layers(1024,512)
+        self.uptrans3=nn.ConvTranspose2d(in_channels=512,out_channels=256,kernel_size=2,stride=2)
+        self.upconv4=conv_layers(512,256)
+        self.uptrans5=nn.ConvTranspose2d(in_channels=256,out_channels=128,kernel_size=2,stride=2)
+        self.upconv6=conv_layers(256,128)
+        self.uptrans7=nn.ConvTranspose2d(in_channels=128,out_channels=64,kernel_size=2,stride=2)
+        self.upconv8=conv_layers(128,64)
+        
+        self.output=nn.Conv2d(in_channels=64,out_channels=2,kernel_size=1)
         
     def forward(self,image):
         
@@ -45,8 +54,25 @@ class UNET(nn.Module):
         x9=self.down5(x8)
         #print(x9.size())
         
-        xt=self.uptrans(x9)
-        print(xt.size())
+        xt=self.uptrans1(x9)
+        y=crop(x7,xt)
+        x_up=self.upconv2(torch.cat([xt,y],1))
+        print(x_up.size())
+        
+        xt=self.uptrans3(x_up)
+        y=crop(x5,xt)
+        x_up=self.upconv4(torch.cat([xt,y],1))
+        print(x_up.size())
+        
+        xt=self.uptran5(x_up)
+        y=crop(x3,xt)
+        x_up=self.upconv6(torch.cat([xt,y],1))
+        print(x_up.size())
+        
+        xt=self.uptrans7(x_up)
+        y=crop(x1,xt)
+        x_up=self.upconv8(torch.cat([xt,y],1))
+        print(x_up.size())
         
         
 if __name__=="__main__":
