@@ -21,7 +21,11 @@ class UNET(nn.Module):
         self.down4=conv_layers(256,512)
         self.down5=conv_layers(512,1024)
         
+        self.uptrans=nn.ConvTranspose2d(in_channels=1024,out_channels=512,kernel_size=2,stride=2)
+        
     def forward(self,image):
+        
+        #first part of the down convolution
         x1=self.down1(image)  #feeding in the image
         #print(x1.size())
         x2=self.maxpool2d(x1)
@@ -33,6 +37,10 @@ class UNET(nn.Module):
         x8=self.maxpool2d(x7)
         x9=self.down5(x8)
         #print(x9.size())
+        
+        x=self.uptrans(x9)
+        print(x.size())
+        
         
 if __name__=="__main__":
     image=torch.rand((1,1,572,572))
