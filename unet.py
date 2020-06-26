@@ -22,7 +22,7 @@ class UNET(nn.Module):
         self.down5=conv_layers(512,1024)
         
     def forward(self,image):
-        x1=self.down1(image)
+        x1=self.down1(image)  #feeding in the image
         #print(x1.size())
         x2=self.maxpool2d(x1)
         x3=self.down2(x2)
